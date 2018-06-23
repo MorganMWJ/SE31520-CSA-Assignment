@@ -49,7 +49,7 @@ class ApplicationController < ActionController::Base
       end
     end
   end
-  
+
   def login_from_session
     self.current_user =
         UserDetail.find_by_id(session[:user_id]) if session[:user_id]
@@ -83,26 +83,33 @@ class ApplicationController < ActionController::Base
 
   # Some very lightweight authorisation checking
   def is_admin?
+    #if current_user not nil & current_user.login == 'admin'
+    #return true otherwise false
     current_user ? current_user.login == 'admin' : false
   end
 
   def admin_required
+    #will only run access_denied if is_admin? returns false
     is_admin? || admin_denied
   end
 
   def admin_denied
     respond_to do |format|
       format.html do
+        #save message in session flash for message display in header section
+        #on the next page the browser gets redirected to
         flash[:error] = 'You must be admin to do that'
+        #redirect to root (localhost:3000, home#index, home/index.html.erb)
         redirect_to root_url
       end
     end
   end
-  
+
   # Store the URI of the current request in the session.
   #
   # We can return to this location by calling #redirect_back_or_default.
   def store_location
+    #session holds the current uri so we can send the user back to where they came from
     session[:return_to] = request.fullpath
   end
 
@@ -111,23 +118,33 @@ class ApplicationController < ActionController::Base
   #   after_action :store_location, :only => [:index, :new, :show, :edit]
   # for any controller you want to be bounce-backable.
   def redirect_back_or_default(default)
+    #if not return_to is set in session hash then use default uri
+    #which is pased to this method
     redirect_to(session[:return_to] || default)
     session[:return_to] = nil
   end
 
   def set_locale
+    #if the language has been GETed to the page in the params hash
+    #update the langauge in the session hash
     session[:locale] = params[:locale] if params[:locale]
+    #set the langauge to that stored in the session
+    #if no lang set in session use the default (en.yml/english)
     I18n.locale = session[:locale] || I18n.default_locale
 
+    #save rthe path to the current locale/language
     locale_path = "#{LOCALES_DIRECTORY}#{I18n.locale}.yml"
 
     unless I18n.load_path.include? locale_path
+      #append the locale_path for the langauge we are using
+      #to the list of translation load paths if not already in list
       I18n.load_path << locale_path
+      #need to "force-initialize" loaded locales
       I18n.backend.send(:init_translations)
     end
   rescue Exception => err
     logger.error err
-    flash.now[:notice] = "#{I18n.locale} translation not available"
+    flash.now[:error] = "#{I18n.locale} translation not available"
 
     I18n.load_path -= [locale_path]
     I18n.locale = session[:locale] = I18n.default_locale
@@ -135,8 +152,9 @@ class ApplicationController < ActionController::Base
 
   # Code taken from Kieran Dunbar's 2016-17 assignment solution
   def get_notifications
+    #gets joins the feeds table to broadcasts#
+    #then gets the first 20 broadcats where the associated feed's name is notification
     @notifications = Broadcast.joins(:feeds).where(feeds: {name: "notification"}).order(created_at: :desc).limit(20)
   end
 
 end
-

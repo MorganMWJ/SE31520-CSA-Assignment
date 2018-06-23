@@ -10,11 +10,18 @@
 <body id="<%= params[:controller].parameterize %>_controller">
 
 <div class="header">
+  <!-- render partial _login.html.erb builds the form on the right side of header-->
   <%= render :partial => 'sessions/login' %>
+
+  <!-- simple navigation for the tabs in header
+        config/navigation.rb-->
   <div class="navigation">
     <%= render_navigation %>
   </div>
 
+  <!--for each key value pair in flash
+      print the value
+    this is used to return error/success notifies-->
   <% flash.each do |key, value| %>
     <span class="flash_<%= key %>">
       <span class="flash_message"><%= value %></span>
@@ -22,6 +29,11 @@
   <% end %>
 
   <!-- Blank URI so browser will request current page when form submitted -->
+  <!--drop down box/form for language choice in header
+      sends a GET to the current page after submit
+      options for dropdown are in LANGUAGES constant variable list
+      I18n.locale is the current language passed as second param
+      so form knows which option is selected when page loads-->
   <%= form_tag '', method: 'GET', class: 'locale' do %>
       <%= select_tag 'locale', options_for_select(LANGUAGES, I18n.locale), \
                        onchange: 'this.form.submit()' %>
@@ -30,6 +42,8 @@
 
 </div>
 <div class="content">
+  <!-- renders the partial notifications/_notifications.html.erb
+      if user is logged in-->
   <%= render :partial => 'notifications/notifications' if logged_in? %>
   <%= yield %>
 </div>

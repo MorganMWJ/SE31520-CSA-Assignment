@@ -1,5 +1,9 @@
 <!-- Code taken and modified by cwl from Kieran Dunbar's assignment solution 2016-17 -->
 <div id="notification_feed">
+  <!--the @notifications comes from the get_notification method in the
+   application_controller.html.erb
+  this method is called before every action via before_action
+    therefore we will always have access to @notifications-->
   <% if @notifications.length > 0 %>
       <% @notifications.each do |notification| %>
           <%= render partial: 'notifications/notification', locals: {notification: notification} %>

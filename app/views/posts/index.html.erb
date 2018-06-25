@@ -1,0 +1,20 @@
+<h1>Forum Threads</h1>
+
+<div class="threads_index">
+  <% @threads.each do |thread| %>
+    <div class="thread_list_item">
+      <!--thread title-->
+      <h4><%=thread.title%></h4>
+      <!-- date time of thread creation-->
+      <h6><%="#{thread.created_at.strftime(%d %b. %Y)} | #{thread.created_at.strftime(%H:%M)}"%></h6>
+      <!-- author of thread or anonymous-->
+      <% if thread.anonymous %>
+      <p><%= "Anonymous" %></p>
+      <% else %>
+      <p><%= "#{thread.user.firstname} #{thread.user.surname}" %></p>
+      <% end %>
+      <!-- number of posts in thread -->
+      <p><%="Number of posts: #{thread.replies.count}"%></p>
+    </div>
+  <% end %>
+</div>

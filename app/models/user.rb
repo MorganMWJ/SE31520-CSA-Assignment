@@ -13,9 +13,9 @@ class User < ApplicationRecord
                       message: 'Bad email address format'
 
   validates_uniqueness_of :email
-  
+
   has_one :image, dependent: :destroy
-  
+
   has_one :user_detail, dependent: :destroy
 
   # This allows for the automatic creation of the UserDetail
@@ -25,7 +25,8 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :user_detail
 
   has_many :broadcasts
-  
+  has_many :posts
+
   def firstname=(value)
     write_attribute :firstname, (value ? value.humanize : nil)
   end
@@ -35,7 +36,7 @@ class User < ApplicationRecord
   end
 
   self.per_page = 8
-  
+
     # Set of helper methods used by users controller
 
   def self.search_columns

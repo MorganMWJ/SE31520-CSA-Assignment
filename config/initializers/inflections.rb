@@ -17,4 +17,5 @@
 ActiveSupport::Inflector.inflections(:en) do |inflect|
   # A rule that keeps capitalisation on acronyms
   inflect.acronym 'API'
+  inflect.irregular 'reply', 'replies'
 end

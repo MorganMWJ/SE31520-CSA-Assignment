@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     # We add a special route to support the search field
     get 'search', on: :collection
   end
-  
+
   # At the moment we only provide a JSON web service
   # API for user account managment. This is provided
   # as an example. See the rest_client folder.
@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   # A singleton resource and so no paths requiring ids are generated
   # Also, don't want to support editing of the session
   resource :session, only: [:new, :create, :destroy]
+
+  resources :posts
 
   # This is just to support the landing page
   get 'home', to: 'home#index', as: :home
